@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, Sunshine</title>
+    <style>
+        :root {
+            --primary-color: #e07a5f;
+            --secondary-color: #f4a261;
+            --bg-color: #fff3ed;
+            --text-color: #6b3e2e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* --- FLOATING HEARTS BACKGROUND --- */
+        .hearts-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .floating-heart {
+            position: absolute;
+            bottom: -50px;
+            color: var(--secondary-color);
+            font-size: 20px;
+            opacity: 0.6;
+            animation: floatUp 8s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- BURST HEART EFFECT --- */
+        .burst-heart {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            animation: burstOut 0.8s ease-out forwards;
+        }
+
+        @keyframes burstOut {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.5); opacity: 0; }
+        }
+
+        /* --- PAGE CONTAINERS --- */
+        .page {
+            display: none;
+            width: 100%;
+            max-width: 650px;
+            padding: 30px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-in-out forwards;
+            z-index: 1;
+            position: relative;
+        }
+
+        .active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        p {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        /* --- HIGHLY VISIBLE NOTICES/REMINDERS --- */
+        .music-notice {
+            font-size: 0.95rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin: 15px 0;
+            background: #ffeedd;
+            border: 1px dashed var(--secondary-color);
+            padding: 10px;
+            border-radius: 10px;
+            display: inline-block;
+            animation: pulseText 1.5s infinite ease-in-out;
+        }
+
+        .scroll-notice {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            display: block;
+            animation: bounceScroll 1.2s infinite;
+        }
+
+        @keyframes bounceScroll {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @keyframes pulseText {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0.7; }
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(224, 122, 95, 0.3);
+        }
+
+        .btn:hover {
+            background-color: #cd6043;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(224, 122, 95, 0.08);
+            transform: translateY(-2px);
+        }
+
+        /* --- MUSIC CONTROLLER BUTTON --- */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border: 2px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: none; 
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 1000;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            color: var(--primary-color); 
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        /* --- PAGE 1: PASSCODE --- */
+        .passcode-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            backdrop-filter: blur(5px);
+        }
+        
+        .passcode-container input {
+            padding: 12px;
+            width: 80%;
+            border: 2px solid var(--secondary-color);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            outline: none;
+        }
+
+        .error-msg {
+            color: #d90429;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        /* --- PAGE 2: WISHES & IMAGES --- */
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 220px;
+            background-color: #ffe5d9;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed var(--secondary-color);
+            color: var(--primary-color);
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .img-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- PAGE 3: MYSTERY BOXES --- */
+        .box-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .mystery-box {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 8px 20px rgba(224, 122, 95, 0.4);
+        }
+
+        .mystery-box:hover { transform: scale(1.1) rotate(5deg); }
+
+        /* --- WHOLE SCREEN SURPRISE OVERLAY --- */
+        .fullscreen-surprise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+            animation: slideInUp 0.5s cubic-bezier(0.1, 1, 0.1, 1) forwards;
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(100vh); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .fullscreen-card {
+            background: rgba(255, 255, 255, 0.95);
+            width: 100%;
+            max-width: 600px;
+            max-height: 82vh;
+            padding: 30px 20px;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(224, 122, 95, 0.15);
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-bottom: 15px;
+            overflow-y: auto;
+        }
+
+        /* --- ORIGINAL COLLAGE STYLE --- */
+        .collage-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: minmax(115px, auto); 
+            gap: 14px;
+            margin: 20px 0;
+        }
+
+        .collage-img:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+        .collage-img:nth-child(5) { grid-column: span 2; grid-row: span 2; }
+        
+        .collage-img:nth-child(2) { grid-column: span 2; grid-row: span 1; }
+        .collage-img:nth-child(3) { grid-column: span 2; grid-row: span 1; } 
+        .collage-img:nth-child(4) { grid-column: span 2; grid-row: span 1; } 
+        .collage-img:nth-child(6) { grid-column: span 2; grid-row: span 1; }
+        .collage-img:nth-child(7) { grid-column: span 2; grid-row: span 1; } 
+        .collage-img:nth-child(8) { grid-column: span 2; grid-row: span 1; } 
+
+        .collage-img {
+            background-color: #ffe5d9;
+            border-radius: 14px;
+            overflow: hidden;
+            border: 3px solid white;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .collage-img img {
+            width: 100%;
+            height: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* --- LETTER STYLING FOR BOX 2 --- */
+        .letter-card {
+            background: #fff8f5;
+            border: 2px dashed var(--secondary-color);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: left;
+            margin: 15px 0;
+            box-shadow: inset 0 0 10px rgba(224, 122, 95, 0.05);
+        }
+
+        .letter-card p {
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            color: var(--text-color);
+        }
+
+        /* --- VIDEO CONTAINER FOR BOX 3 --- */
+        .video-box {
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            margin: 15px 0;
+            background: #000;
+        }
+
+        .video-box video {
+            width: 100%;
+            display: block;
+        }
+
+        .heart-icon {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            animation: heartbeat 1.2s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.1); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.15); }
+            80%, 100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="Until-I-Found-you.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="musicToggleBtn" class="music-control" onclick="toggleMusic()">
+        <span id="musicSymbol">♫</span>
+    </button>
+
+    <div class="hearts-bg" id="heartsBg"></div>
+
+    <div id="page1" class="page active">
+        <div class="passcode-container">
+            <div class="heart-icon">🍑</div>
+            <h2 style="margin-top: 10px;">Enter the Secret Code</h2>
+            <p>Only your loved ones know the password...</p>
+            <input type="password" id="passcodeInput" placeholder="Hint: Your Origin">
+            <div id="errorMsg" class="error-msg">Oops! Wrong code. Try again, sunshine!</div>
+            
+            <button class="btn" onclick="checkPasscode(event)">Enter my world</button>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <h1>Happy Birthday, 
+         Dear Khushi! 🎂</h1>
+        
+        <span class="scroll-notice">👇 Scroll Down to See Everything 👇</span>
+        <div class="music-notice">✨ Click the peach music button ♫ up top if it's quiet!</div>
+
+        <p>To the one who makes the world incredibly bright, Your smile shines brighter than a thousand stars. Today is all about celebrating you!</p>
+        
+        <div class="image-gallery">
+            <div class="img-placeholder"><img src="gallery1.jpg" alt="Memory 1"></div>
+            <div class="img-placeholder"><img src="gallery2.jpg" alt="Memory 2"></div>
+            <div class="img-placeholder"><img src="gallery3.jpg" alt="Memory 3"></div>
+            <div class="img-placeholder"><img src="gallery4.jpg" alt="Memory 4"></div>
+        </div>
+
+        <p>I have built a small universe of surprises for you. Ready to explore it?</p>
+        
+        <button class="btn" onclick="navigateTo('page3')">Next Surprise ✨</button>
+    </div>
+
+    <div id="page3" class="page">
+        <h2>Choose Your Gift Box 🎁</h2>
+        
+        <p>Every box hides a surprise made just for you. Tap on them one by one to reveal your exciting surprises!</p>
+        
+        <div class="box-container">
+            <div class="mystery-box" onclick="openBox(1, event)">🎁</div>
+            <div class="mystery-box" onclick="openBox(2, event)">💝</div>
+            <div class="mystery-box" onclick="openBox(3, event)">🎬</div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-secondary" onclick="navigateTo('page2')">⬅️ Back</button>
+        </div>
+    </div>
+
+    <div id="fullscreenSurpriseContainer" class="fullscreen-surprise">
+        <div id="surpriseContent" class="fullscreen-card"></div>
+        <button class="btn" onclick="closeBox()">⬅️ Back to Boxes</button>
+    </div>
+
+    <script>
+        const CORRECT_PASSCODE = "1309"; 
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggleBtn = document.getElementById('musicToggleBtn');
+        const fsContainer = document.getElementById('fullscreenSurpriseContainer');
+        const surpriseContent = document.getElementById('surpriseContent');
+        let wasMusicPlayingBeforeVideo = false;
+
+        // --- HISTORICAL NAVIGATION SYSTEM ---
+        window.addEventListener('DOMContentLoaded', () => {
+            history.replaceState({ page: 'page1' }, '');
+            createFloatingHearts();
+        });
+
+        window.addEventListener('popstate', (event) => {
+            if (event.state) {
+                const state = event.state;
+                
+                if (fsContainer.style.display === 'flex' && state.page !== 'box') {
+                    closeBox(true); 
+                }
+                
+                if (state.page === 'page1') {
+                    navigateTo('page1', false);
+                } else if (state.page === 'page2') {
+                    navigateTo('page2', false);
+                } else if (state.page === 'page3') {
+                    navigateTo('page3', false);
+                }
+            }
+        });
+
+        // --- BACKGROUND HEARTS GENERATOR ---
+        function createFloatingHearts() {
+            const container = document.getElementById('heartsBg');
+            const heartTypes = ['🍑', '💖', '💝', '✨', '🌸'];
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('floating-heart');
+                heart.innerText = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = Math.random() * 20 + 15 + 'px';
+                heart.style.animationDuration = Math.random() * 4 + 6 + 's';
+                container.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 10000);
+            }, 400);
+        }
+
+        // --- HEART BURST CLICK EFFECT ---
+        function triggerHeartBurst(x, y) {
+            const heartTypes = ['🍑', '💖', '💝', '✨', '🌸'];
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('burst-heart');
+                heart.innerText = heartTypes[Math.floor(Math.random() * heartTypes.length)];
+                heart.style.left = x + 'px';
+                heart.style.top = y + 'px';
+                heart.style.fontSize = Math.random() * 15 + 15 + 'px';
+                const tx = (Math.random() - 0.5) * 300 + 'px';
+                const ty = (Math.random() - 0.5) * 300 + 'px';
+                heart.style.setProperty('--tx', tx);
+                heart.style.setProperty('--ty', ty);
+                document.body.appendChild(heart);
+                setTimeout(() => { heart.remove(); }, 800);
+            }
+        }
+
+        // --- MUSIC LOGIC RUNNER ---
+        function toggleMusic() {
+            const symbol = document.getElementById('musicSymbol');
+            if (bgMusic.paused) {
+                bgMusic.play().then(() => {
+                    symbol.innerText = "‖"; 
+                }).catch(err => console.log("Audio trigger failed:", err));
+            } else {
+                bgMusic.pause();
+                symbol.innerText = "♫"; 
+            }
+        }
+
+        // --- PAGE TRANSITION ACTION ---
+        function navigateTo(pageId, pushToHistory = true) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+
+            if (pushToHistory) {
+                history.pushState({ page: pageId }, '', '#' + pageId);
+            }
+        }
+
+        function checkPasscode(event) {
+            const input = document.getElementById('passcodeInput').value;
+            const error = document.getElementById('errorMsg');
+            if (input.toLowerCase() === CORRECT_PASSCODE.toLowerCase()) {
+                error.style.display = 'none';
+                triggerHeartBurst(event.clientX, event.clientY);
+                
+                musicToggleBtn.style.display = "flex";
+                document.getElementById('musicSymbol').innerText = "♫";
+
+                setTimeout(() => { navigateTo('page2'); }, 400);
+            } else {
+                error.style.display = 'block';
+            }
+        }
+
+        // --- BOX SURPRISE LOGIC ---
+        function openBox(boxNumber, event) {
+            triggerHeartBurst(event.clientX, event.clientY);
+
+            const container = document.getElementById('surpriseContent');
+            let contentHtml = '';
+
+            if (boxNumber === 1) {
+                contentHtml = `
+                    <span class="scroll-notice">👇 Scroll Down to See your Memory Mosaic 👇</span>
+                    <div class="heart-icon">📸</div>
+                    <h2 style="margin-top:10px;">Your way of being effortlessly wonderful. ✨</h2>
+                    <p>People work very very hard to look beautiful but you look naturally. Here are some proofs. 🤍</p>
+                    <div class="collage-grid">
+                        <div class="collage-img"><img src="c1.jpg" alt="Pic 1"></div>
+                        <div class="collage-img"><img src="c2.jpg" alt="Pic 2"></div>
+                        <div class="collage-img"><img src="c3.jpg" alt="Pic 3"></div>
+                        <div class="collage-img"><img src="c4.jpg" alt="Pic 4"></div>
+                        <div class="collage-img"><img src="c5.jpg" alt="Pic 5"></div>
+                        <div class="collage-img"><img src="c6.jpg" alt="Pic 6"></div>
+                        <div class="collage-img"><img src="c7.jpg" alt="Pic 7"></div>
+                        <div class="collage-img"><img src="c8.jpg" alt="Pic 8"></div>
+                    </div>
+                `;
+            } else if (boxNumber === 2) {
+                contentHtml = `
+                    <span class="scroll-notice">👇 Read My Letter Below 👇</span>
+                    <div class="heart-icon">💌</div>
+                    <h2>A Letter Just For You</h2>
+                    <div class="letter-card">
+                        <p><strong>Dearest Khushi,</strong></p>
+                        <p>On this special day, I wanted to take a moment to express how truly wonderful you are. Having you in my life fills every day with so much warmth, warmth that I can never thank you enough for.</p>
+                        <p>Your kindness, your laugh, and the incredible light you bring into every room inspire everyone around you. Thank you for simply being you, effortlessly genuine and amazingly bright and on this special occasion i have written something which says that </p>
+                       <p>Jinse nahi hota Ishq
+ unhe lagta pyar jhamela hai </p>
+
+<p>Log khade ho pass fir bhi 
+rehta dil akela hai</p>
+
+<p>Or dekha aapko
+to hua yakeen mujhe</p>
+
+<p>Ye duniya or kuch nahi 
+haseeno ka mela hai.</p>
+                        <p>May this year bring you endless joy, laughter, success, and all the happiness your heart can hold. You deserve all the good things in the world today and always.</p>
+                        <p style="text-align: right; margin-top: 15px; font-weight: bold;">— With endless warmth & love ❤️</p>
+                    </div>
+                `;
+            } else if (boxNumber === 3) {
+                contentHtml = `
+                    <div class="heart-icon">🎬</div>
+                    <h2>A Special Video Message</h2>
+                    <p>Press play to watch a little memory video made for you!</p>
+                    <div class="video-box">
+                        <video id="surpriseVideo" controls poster="gallery1.jpg">
+                            <source src="birthday-video.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 5px;">(Make sure video file <b>birthday-video.mp4</b> is in the same folder!)</p>
+                `;
+            }
+
+            container.innerHTML = contentHtml;
+            fsContainer.style.display = 'flex';
+            history.pushState({ page: 'box' }, '', '#box');
+
+            // --- LISTENERS TO PAUSE/RESUME MUSIC ON VIDEO PLAY/PAUSE ---
+            if (boxNumber === 3) {
+                const video = document.getElementById('surpriseVideo');
+                if (video) {
+                    video.addEventListener('play', () => {
+                        if (!bgMusic.paused) {
+                            wasMusicPlayingBeforeVideo = true;
+                            bgMusic.pause();
+                            document.getElementById('musicSymbol').innerText = "♫";
+                        }
+                    });
+
+                    video.addEventListener('pause', () => {
+                        if (wasMusicPlayingBeforeVideo) {
+                            bgMusic.play();
+                            document.getElementById('musicSymbol').innerText = "‖";
+                            wasMusicPlayingBeforeVideo = false;
+                        }
+                    });
+
+                    video.addEventListener('ended', () => {
+                        if (wasMusicPlayingBeforeVideo) {
+                            bgMusic.play();
+                            document.getElementById('musicSymbol').innerText = "‖";
+                            wasMusicPlayingBeforeVideo = false;
+                        }
+                    });
+                }
+            }
+        }
+
+        function closeBox(fromHistory = false) {
+            const video = fsContainer.querySelector('video');
+            if (video) {
+                video.pause();
+            }
+
+            // Resume background music if it was playing prior to watching the video
+            if (wasMusicPlayingBeforeVideo) {
+                bgMusic.play();
+                document.getElementById('musicSymbol').innerText = "‖";
+                wasMusicPlayingBeforeVideo = false;
+            }
+
+            fsContainer.style.display = 'none';
+            if (!fromHistory) {
+                history.back();
+            }
+        }
+    </script>
+</body>
+</html>
