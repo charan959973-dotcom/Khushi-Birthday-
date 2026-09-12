@@ -584,7 +584,7 @@
                         <div class="collage-img"><img src="c4.jpg" alt="Pic 4"></div>
                         <div class="collage-img"><img src="c5.jpg" alt="Pic 5"></div>
                         <div class="collage-img"><img src="c6.jpg" alt="Pic 6"></div>
-                        <div class="collage-img"><img src="c7.jpg" alt="Pic 7"></div>
+             <div class="collage-img"><img src="c7.jpg" alt="Pic 7"></div>
                         <div class="collage-img"><img src="c8.jpg" alt="Pic 8"></div>
                     </div>
                 `;
@@ -596,7 +596,7 @@
                     <div class="letter-card">
                         <p><strong>Dearest Khushi,</strong></p>
                         <p>On this special day, I wanted to take a moment to express how truly wonderful you are. Having you in my life fills every day with so much warmth, warmth that I can never thank you enough for.</p>
-                        <p>Your kindness, your laugh, and the incredible light you bring into every room inspire everyone around you. Thank you for simply being you, effortlessly genuine and amazingly bright and on this special occasion i have written something which says that </p>
+<p>Your kindness, your laugh, and the incredible light you bring into every room inspire everyone around you. Thank you for simply being you, effortlessly genuine and amazingly bright and on this special occasion i have written something which says that </p>
                        <p>Jinse nahi hota Ishq
  unhe lagta pyar jhamela hai </p>
 
@@ -629,6 +629,18 @@ haseeno ka mela hai.</p>
 
             container.innerHTML = contentHtml;
             fsContainer.style.display = 'flex';
+            
+            // Force reset scroll positions to top
+            container.scrollTop = 0;
+            fsContainer.scrollTop = 0;
+            container.scrollTo(0, 0);
+            fsContainer.scrollTo(0, 0);
+            
+            requestAnimationFrame(() => {
+                container.scrollTop = 0;
+                fsContainer.scrollTop = 0;
+            });
+
             history.pushState({ page: 'box' }, '', '#box');
 
             // --- LISTENERS TO PAUSE/RESUME MUSIC ON VIDEO PLAY/PAUSE ---
@@ -638,8 +650,7 @@ haseeno ka mela hai.</p>
                     video.addEventListener('play', () => {
                         if (!bgMusic.paused) {
                             wasMusicPlayingBeforeVideo = true;
-                            bgMusic.pause();
-                            document.getElementById('musicSymbol').innerText = "♫";
+                            bgMusic.pause();document.getElementById('musicSymbol').innerText = "♫";
                         }
                     });
 
